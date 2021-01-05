@@ -2,7 +2,7 @@
 ;==============================================
 ;
 ; VoiceCheck
-; Version: 3.0 2017
+; Version: 3.1 2021
 ; Ersteller: Robert Richter
 ;
 ;==============================================
@@ -10,6 +10,7 @@
 
 #include <MsgBoxConstants.au3>
 #include <TrayConstants.au3>
+#include <Date.au3>
 
 
 ; Ini-Datei einlesen, bzw. erzeugen
@@ -80,8 +81,12 @@ While 1
 	  if $button_status = -1 Then
 		 $sende_status = "error"
 	  EndIf
-	  ; neuen Status per UDP senden
+	  ; VERALTET - Status als Text per UDP senden
 	  $status = UDPSend($socket, @ipaddress1 & "#" & $sende_Status)
+	  ; NEU - Status als JSON per UDP senden
+	  $json = '{"client": "' & @ipaddress1 & '","status": "' & $sende_Status & '", "timestamp": "' & _Now() & '"}'
+	  $status = UDPSend($socket, $json)
+	  ; Fehlermeldung
 	  If $status = 0 then
 		 MsgBox(0, "ERROR", "Fehler beim Senden des UDP-Pakets: " & @error)
 		 Exit
